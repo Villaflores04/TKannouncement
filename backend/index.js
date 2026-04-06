@@ -10,6 +10,10 @@ app.use(bodyParser.json());
 
 let users = [];
 
+app.get("/", (req, res) => {
+  res.send("TKannouncement backend is running!");
+});
+
 app.post("/register", (req, res) => {
   const { username, password } = req.body;
   if (users.find(u => u.username === username)) {
