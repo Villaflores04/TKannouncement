@@ -1,39 +1,50 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-const API_URL = "https://tkannouncement.onrender.com"; // your Render backend URL
+const API_URL = ""; // empty = same domain
 
 function App() {
+  const [isLogin, setIsLogin] = useState(true);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
 
-  const handleRegister = async () => {
+  const handleSubmit = async () => {
     try {
-      const res = await axios.post(`${API_URL}/register`, { username, password });
+      const url = isLogin ? "/login" : "/register";
+      const res = await axios.post(url, { username, password });
       setMessage(res.data.message);
     } catch (err) {
-      setMessage(err.response.data.message);
-    }
-  };
-
-  const handleLogin = async () => {
-    try {
-      const res = await axios.post(`${API_URL}/login`, { username, password });
-      setMessage(res.data.message);
-    } catch (err) {
-      setMessage(err.response.data.message);
+      setMessage(err.response?.data?.message || "Error");
     }
   };
 
   return (
-    <div style={{ padding: "50px", textAlign: "center" }}>
-      <h1>TKannouncement Login/Register</h1>
-      <input placeholder="Username" value={username} onChange={e => setUsername(e.target.value)} /><br /><br />
-      <input placeholder="Password" type="password" value={password} onChange={e => setPassword(e.target.value)} /><br /><br />
-      <button onClick={handleRegister}>Register</button>
-      <button onClick={handleLogin} style={{ marginLeft: "10px" }}>Login</button>
+    <div style={{ textAlign: "center", marginTop: "100px" }}>
+      <h1>TKannouncement</h1>
+
+      <h2>{isLogin ? "Login" : "Register"}</h2>
+
+      <input
+        placeholder="Username"
+        onChange={(e) => setUsername(e.target.value)}
+      /><br /><br />
+
+      <input
+        type="password"
+        placeholder="Password"
+        onChange={(e) => setPassword(e.target.value)}
+      /><br /><br />
+
+      <button onClick={handleSubmit}>
+        {isLogin ? "Login" : "Register"}
+      </button>
+
       <p>{message}</p>
+
+      <button onClick={() => setIsLogin(!isLogin)}>
+        Switch to {isLogin ? "Register" : "Login"}
+      </button>
     </div>
   );
 }
